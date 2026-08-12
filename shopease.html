@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopEase — Online Shopping</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:#f5f6f8;color:#171717}
+header{background:#111827;color:#fff;padding:14px 5%;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:10}
+.logo{font-size:25px;font-weight:800;color:#fbbf24}.search{flex:1;display:flex}.search input{width:100%;padding:12px 15px;border:0;border-radius:8px 0 0 8px;font-size:15px}.search button{border:0;background:#f59e0b;padding:0 18px;border-radius:0 8px 8px 0;font-size:18px;cursor:pointer}
+.cart{cursor:pointer;font-weight:700}.hero{margin:24px 5%;background:linear-gradient(135deg,#111827,#374151);color:white;border-radius:18px;padding:42px 6%;display:flex;justify-content:space-between;align-items:center}.hero h1{font-size:42px;margin-bottom:10px}.hero p{color:#d1d5db;margin-bottom:22px}.hero button,.buy{background:#f59e0b;border:0;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer}.hero .emoji{font-size:110px}
+.container{padding:0 5%}.categories{display:flex;gap:12px;overflow:auto;margin:18px 0 25px}.cat{background:white;padding:11px 18px;border-radius:30px;white-space:nowrap;cursor:pointer;border:1px solid #ddd}.cat.active{background:#111827;color:#fff}
+h2{margin:20px 0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding-bottom:40px}.card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 3px 12px #00000010;transition:.2s}.card:hover{transform:translateY(-4px)}.pic{height:190px;background:#eef1f5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:80px}.card h3{font-size:16px;margin:12px 0 7px}.price{font-size:20px;font-weight:800}.old{text-decoration:line-through;color:#888;font-size:13px;margin-left:7px}.rating{color:#f59e0b;font-size:13px;margin:7px 0 12px}.buy{width:100%;background:#111827;color:white}.empty{grid-column:1/-1;text-align:center;padding:40px;background:white;border-radius:14px}
+footer{background:#111827;color:#bbb;padding:30px 5%;text-align:center}
+@media(max-width:800px){header{gap:10px}.logo{font-size:19px}.cart{font-size:13px}.hero{padding:28px 6%}.hero h1{font-size:30px}.hero .emoji{font-size:65px}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.pic{height:150px;font-size:60px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">ShopEase</div>
+  <div class="search"><input id="search" placeholder="Search products..." oninput="render()"><button>🔍</button></div>
+  <div class="cart" onclick="showCart()">🛒 Cart (<span id="count">0</span>)</div>
+</header>
+
+<section class="hero">
+  <div><h1>Big Shopping Sale</h1><p>Trendy products • Great prices • Fast delivery</p><button onclick="document.getElementById('products').scrollIntoView()">Shop Now →</button></div>
+  <div class="emoji">🛍️</div>
+</section>
+
+<main class="container">
+  <div class="categories">
+    <div class="cat active" onclick="setCat('All',this)">All</div>
+    <div class="cat" onclick="setCat('Fashion',this)">👕 Fashion</div>
+    <div class="cat" onclick="setCat('Electronics',this)">📱 Electronics</div>
+    <div class="cat" onclick="setCat('Home',this)">🏠 Home</div>
+    <div class="cat" onclick="setCat('Shoes',this)">👟 Shoes</div>
+  </div>
+  <h2 id="products">Popular Products</h2>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>© 2026 ShopEase — Demo shopping website</footer>
+
+<script>
+const products=[
+{name:"Wireless Headphones",cat:"Electronics",price:1499,old:1999,icon:"🎧",rating:"4.7"},
+{name:"Smart Watch",cat:"Electronics",price:2199,old:2999,icon:"⌚",rating:"4.5"},
+{name:"Classic T-Shirt",cat:"Fashion",price:599,old:899,icon:"👕",rating:"4.4"},
+{name:"Running Shoes",cat:"Shoes",price:1299,old:1799,icon:"👟",rating:"4.6"},
+{name:"Backpack",cat:"Fashion",price:799,old:1199,icon:"🎒",rating:"4.3"},
+{name:"Table Lamp",cat:"Home",price:699,old:999,icon:"💡",rating:"4.5"},
+{name:"Bluetooth Speaker",cat:"Electronics",price:999,old:1499,icon:"🔊",rating:"4.6"},
+{name:"Sunglasses",cat:"Fashion",price:449,old:699,icon:"🕶️",rating:"4.2"}
+];
+let cat="All",cart=[];
+function setCat(c,el){cat=c;document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));el.classList.add("active");render()}
+function render(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const list=products.filter(p=>(cat==="All"||p.cat===cat)&&p.name.toLowerCase().includes(q));
+ document.getElementById("grid").innerHTML=list.length?list.map(p=>`
+ <div class="card"><div class="pic">${p.icon}</div><h3>${p.name}</h3>
+ <div class="rating">★ ${p.rating} • ${p.cat}</div>
+ <div class="price">₹${p.price.toLocaleString()} <span class="old">₹${p.old.toLocaleString()}</span></div>
+ <button class="buy" onclick="add('${p.name}')">Add to Cart</button></div>`).join(""):'<div class="empty">No products found.</div>';
+ document.getElementById("count").textContent=cart.length;
+}
+function add(name){cart.push(name);document.getElementById("count").textContent=cart.length;alert(name+" added to cart!")}
+function showCart(){alert(cart.length?("Cart items:\\n• "+cart.join("\\n• ")):"Your cart is empty.")}
+render();
+</script>
+</body>
+</html>
